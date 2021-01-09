@@ -32,7 +32,7 @@ struct movie *createMovie(char *currLine) {
 
 	// For use with strtok_r
 	char *saveptr1;
-	char* saveptr2;
+	char *saveptr2;
 
 	// The first token is the title
 	char *token = strtok_r(currLine, ",", &saveptr1);
@@ -45,11 +45,38 @@ struct movie *createMovie(char *currLine) {
 
 	// The next token is list of languages
 	token = strtok_r(NULL, ",", &saveptr1);
-	char *tokenLanguage = strtok_r(token, "[;]", &saveptr2);
-	strcpy(currMovie->languages[0], tokenLanguage);
+	char *tokenLanguage = strtok_r(token, "[", &saveptr2);
+	tokenLanguage = strtok_r(NULL, ";", &saveptr2);
+	int numLanguage = 0;
+	while (tokenLanguage != NULL) {
+		strcpy(currMovie->languages[numLanguage], tokenLanguage);
+		numLanguage++;
+		tokenLanguage = strtok_r(NULL, ';]', &saveptr2);
+	}
 
+	// The last token is rating value
+	token = strtok_r(NULL, "\n", &saveptr1);
+	char *ptr;
+	currMovie->ratingValue = strtod(token, ptr);
 
+	// Set the next node to NULL in the newly created student entry
+	currMovie->next = NULL;
+
+	return currMovie;
 }
+
+
+/*
+	Return a linked list of movies by parsing data from
+	each line of the specified file.
+*/
+
+
+/*
+	Print menu of interactive choices to user and process
+	the selected choice.
+*/
+
 
 /*
 	Process the file provided as an argument to the program to
