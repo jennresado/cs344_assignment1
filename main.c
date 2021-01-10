@@ -149,7 +149,28 @@ void printHighestRatedMoviesYr(struct movie *list) {
 	Print movies and their year of release for a specified language
 */
 void printMoviesSpecLang(struct movie *list) {
+	char language[21];
+	int count = 0;
 
+	printf("Enter the language for which you want to see movies: ");
+	scanf("%s", language);
+
+	// Print the year of release and movie title for movies released
+	// for specified language
+	while (list != NULL) {
+		for (int i = 0; i < 5; i++) {
+			if (strcmp(language, list->languages[i])) {
+				printf("%d %s\n", list->year, list->languages[i]);
+				count++;
+			}
+		}
+		list = list->next;
+	}
+
+	// No movies were released for specified language
+	if (count == 0) {
+		printf("No data about movies released in %s", language);
+	}
 }
 
 /*
@@ -178,6 +199,9 @@ void interactions(struct movie *list) {
 			break;
 		case 3:
 			printMoviesSpecLang(list);
+			break;
+		default:
+			printf("You entere an incorrect choice. Try again.\n");
 			break;
 		}
 
