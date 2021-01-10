@@ -108,7 +108,7 @@ struct movie *processFile(char* filePath) {
 	free(currLine);
 	fclose(movieFile);
 
-	printf("Processed file %s and parsed data for %d movies", filePath, movies);
+	printf("Processed file %s and parsed data for %d movies\n", filePath, movies);
 
 	return head;
 }
@@ -118,8 +118,47 @@ struct movie *processFile(char* filePath) {
 	the selected choice.
 */
 void interactions(struct movie* aMovie) {
+	int choice;
 
+	printf("1. Show movies released in the specified year\n");
+	printf("2. Show highest rated movie for each year\n");
+	printf("3. Show the title and year of release of all movies in a specific language\n");
+	printf("4. Exit from the program\n");
+	
+	// Receive input from user and process based on value
+	printf("Enter a choice from 1 to 4: ");
+	scanf("%d", &choice);
+	
+	while (choice != 4) {
+		switch (choice) {
+		case 1:
+			printMoviesReleased();
+			break;
+		case 2:
+			printHighestRatedMoviesYr();
+			break;
+		case 3:
+			printMoviesSpecLang();
+			break;
+		}
+
+		printf("Enter a choice from 1 to 4: ");
+		scanf("%d", &choice);
+	}
 }
+
+/*
+	Print movies released in a specified year
+*/
+
+/*
+	Print highest rated movies for each year
+*/
+
+/*
+	Print movies and their year of release for a specified language
+*/
+
 
 /*
 	Process the file provided as an argument to the program to
