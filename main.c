@@ -70,13 +70,56 @@ struct movie *createMovie(char *currLine) {
 	Return a linked list of movies by parsing data from
 	each line of the specified file.
 */
+struct movie *processFile(char* filePath) {
+	int movies = 0;
 
+	// Open the specified file for reading onlu
+	FILE *movieFile = fopen(filePath, "r");
+
+	char *currLine = NULL;
+	size_t len = 0;
+	ssize_t nread;
+	char *token;
+
+	// The head of the linked list
+	struct movie *head = NULL;
+	struct movie *tail = NULL;
+
+	// Read the file line by line
+	while ((nread = getLine(&currLine, &len, movieFile)) != -1) {
+		// Get a new movie node corresponding to the current line
+		struct movie *newNode = createMovie(currLine);
+		movies++;
+
+		// Is this the first node in the linked list?
+		if (head == NULL) {
+			// This is the first node in the linked list
+			// Set the head and the tail to this node
+			head = newNode;
+			tail = newNode;
+		}
+		else {
+			// This is not the first node
+			// Add this node to the list and advance the tail
+			tail->next = newNode;
+			tail = newNode;
+		}
+	}
+	free(currLine);
+	fclose(movieFile);
+
+	printf("Processed file %s and parsed data for %d movies", filePath, movies);
+
+	return head;
+}
 
 /*
 	Print menu of interactive choices to user and process
 	the selected choice.
 */
+void interactions(struct movie* aMovie) {
 
+}
 
 /*
 	Process the file provided as an argument to the program to
@@ -92,6 +135,6 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 	struct movie* list = processFile(argv[1]);
-	printMovieList(list);
+	interactions(list);
 	return EXIT_SUCCESS;
 }
