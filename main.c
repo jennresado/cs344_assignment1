@@ -23,6 +23,14 @@ struct movie {
 	struct movie* next;
 };
 
+/* struct for highest rated movie for each year*/
+struct rating {
+	int year;
+	double ratingValue;
+	char *title;
+	struct rating* next;
+};
+
 /*
 	Parse the current line which is comma delimited and create a
 	movie struct with the data in this line.
@@ -66,6 +74,27 @@ struct movie *createMovie(char *currLine) {
 }
 
 /*
+	Create a rating struct with current movie data.
+*/
+struct rating* createRating(struct movie* aMovie) {
+	struct rating* currRating = malloc(sizeof(struct rating));
+
+	// Set the year
+	currRating->year = aMovie->year;
+
+	// Highest rating for movie of year
+	currRating->ratingValue = aMovie->ratingValue;
+
+	// Title of movie of year
+	strcpy(currRating->title, aMovie->title);
+
+	// Set the next node to NULL in newly created rating entry
+	currRating->next = NULL;
+
+	return currRating;
+}
+
+/*
 	Return a linked list of movies by parsing data from
 	each line of the specified file.
 */
@@ -80,8 +109,9 @@ struct movie *processFile(char* filePath) {
 	ssize_t nread;
 	char *token;
 
-	// The head of the linked list
+	// The head of the movie linked list
 	struct movie *head = NULL;
+	// The tail of the movie linked list
 	struct movie *tail = NULL;
 
 	// Read the file line by line
@@ -129,6 +159,7 @@ void printMoviesReleased(struct movie *list) {
 			printf("%s\n", list->title);
 			count++;
 		}
+
 		list = list->next;
 	}
 
@@ -142,7 +173,70 @@ void printMoviesReleased(struct movie *list) {
 	Print highest rated movies for each year
 */
 void printHighestRatedMoviesYr(struct movie *list) {
+	// Find highest rated movie per year
+	struct rating* rList = processRatings(list);
 
+	while (rList != NULL) {
+		printf("%d %.1f %s\n", rList->year, rList->ratingValue, rList->title);
+		rList = rList->next;
+	}
+}
+
+int processRatings(struct movie* list) {
+	// The head of the linked list
+	struct rating* head = NULL;
+	// The tail of the linked list
+	struct rating* tail = NULL;
+
+	// Find the highest rated movie per year
+	while (list != NULL) {
+		int exists;
+
+		// First node in linked list is empty
+		if (head == NULL) {
+			// Get a new rating node corresponding to the current movie
+			struct rating* newNode = createRating(list);
+			head = newNode;
+			tail = newNode;
+		}
+		else {
+			// This is not the first node
+			// Determine if current movie ranks highest for its year
+			// Updates rating for year, if it outranks another movie
+			exists = checkRatingYear(head, list);
+
+			// Year of current movie does not exist or rating is not higher
+			if (exists == 0) {
+				// Get a new rating node corresponding to the current movie
+				struct rating* newNode = createRating(list);
+
+				// Add this node to the list and advance the tail
+				tail->next = newNode;
+				tail = newNode;
+			}
+		}
+	}
+	return head;
+}
+
+/*
+	Determine if current movie ranks highest for its year
+*/
+int checkRatingYear(struct rating* list, struct movie* aMovie) {
+	while (list != NULL) {
+		// Year of current movie exists 
+		if (list->year == aMovie->year) {
+			if (list->ratingValue < aMovie->ratingValue) {
+				// Update the rating for year if current movie outranks
+				// previous highest rated movie
+				list->ratingValue = aMovie->ratingValue;
+				strcpy(list->title, aMovie->title);
+			}
+			return 1;
+		}
+		list = list->next;
+	}
+	return 0;
 }
 
 /*
@@ -164,6 +258,7 @@ void printMoviesSpecLang(struct movie *list) {
 				count++;
 			}
 		}
+
 		list = list->next;
 	}
 
