@@ -65,7 +65,6 @@ struct movie *createMovie(char *currLine) {
 	return currMovie;
 }
 
-
 /*
 	Return a linked list of movies by parsing data from
 	each line of the specified file.
@@ -114,10 +113,50 @@ struct movie *processFile(char* filePath) {
 }
 
 /*
+	Print movies released in a specified year
+*/
+void printMoviesReleased(struct movie *list) {
+	int year;
+	int count = 0;
+
+	// Ask user for a year
+	printf("Enter the year for which you want to see movies: ");
+	scanf("%d", &year);
+
+	// Print the names of all the movies released in specified year
+	while (list != NULL) {
+		if (list->year == year) {
+			printf("%s\n", list->title);
+			count++;
+		}
+		list = list->next;
+	}
+
+	// No movies were released in specified year
+	if (count == 0) {
+		printf("No data about movies released in the year %d", year);
+	}
+}
+
+/*
+	Print highest rated movies for each year
+*/
+void printHighestRatedMoviesYr(struct movie *list) {
+
+}
+
+/*
+	Print movies and their year of release for a specified language
+*/
+void printMoviesSpecLang(struct movie *list) {
+
+}
+
+/*
 	Print menu of interactive choices to user and process
 	the selected choice.
 */
-void interactions(struct movie* aMovie) {
+void interactions(struct movie *list) {
 	int choice;
 
 	printf("1. Show movies released in the specified year\n");
@@ -128,17 +167,17 @@ void interactions(struct movie* aMovie) {
 	// Receive input from user and process based on value
 	printf("Enter a choice from 1 to 4: ");
 	scanf("%d", &choice);
-	
+
 	while (choice != 4) {
 		switch (choice) {
 		case 1:
-			printMoviesReleased();
+			printMoviesReleased(list);
 			break;
 		case 2:
-			printHighestRatedMoviesYr();
+			printHighestRatedMoviesYr(list);
 			break;
 		case 3:
-			printMoviesSpecLang();
+			printMoviesSpecLang(list);
 			break;
 		}
 
@@ -146,19 +185,6 @@ void interactions(struct movie* aMovie) {
 		scanf("%d", &choice);
 	}
 }
-
-/*
-	Print movies released in a specified year
-*/
-
-/*
-	Print highest rated movies for each year
-*/
-
-/*
-	Print movies and their year of release for a specified language
-*/
-
 
 /*
 	Process the file provided as an argument to the program to
